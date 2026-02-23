@@ -94,7 +94,7 @@ function pintarFiltrosEstatus() {
 
   contenedor.innerHTML += `
     <button onclick="filtrarEstatus('Todos')" class="btn-filtro">
-      Todos los estados
+      Todos
     </button>
   `;
 
