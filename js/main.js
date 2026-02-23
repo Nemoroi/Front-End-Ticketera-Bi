@@ -1,7 +1,11 @@
 let proyectos = [];
 let tiposProyecto = [];
 let modo = "nuevo";
+
 let filtroTipo = "Todos";
+let filtroEstatus = "Todos";
+
+let estatusLista = ["Creado", "Procesando", "Finalizado"];
 
 /* ================= FAB ================= */
 
@@ -29,6 +33,7 @@ async function cargarProyectos() {
 }
 
 async function cargarTiposProyecto() {
+
   tiposProyecto = await getTipos_Proyecto();
 
   proyectoTipo.innerHTML = `<option value="">Seleccione</option>`;
@@ -42,23 +47,23 @@ async function cargarTiposProyecto() {
   pintarFiltros();
 }
 
-async function cargarEstatus() {
-  const estatus = await getEstatus();
+function cargarEstatus() {
 
   proyectoStatus.innerHTML = `<option value="">Seleccione</option>`;
 
-  estatus.forEach(e => {
+  estatusLista.forEach(e => {
     proyectoStatus.innerHTML += `
-      <option value="${e.clasificacion}">
-        ${e.clasificacion}
-      </option>
+      <option value="${e}">${e}</option>
     `;
   });
+
+  pintarFiltrosEstatus();
 }
 
 /* ================= FILTROS ================= */
 
 function pintarFiltros() {
+
   const contenedor = document.getElementById("filtrosTipo");
 
   contenedor.innerHTML = `
@@ -78,6 +83,40 @@ function pintarFiltros() {
       </button>
     `;
   });
+
+}
+
+function pintarFiltrosEstatus() {
+
+  const contenedor = document.getElementById("filtrosTipo");
+
+  contenedor.innerHTML += `<div class="w-full"></div>`;
+
+  contenedor.innerHTML += `
+    <button onclick="filtrarEstatus('Todos')" class="btn-filtro">
+      Todos los estados
+    </button>
+  `;
+
+  estatusLista.forEach(e => {
+
+    let color = "#6b7280";
+
+    if (e === "Creado") color = "#06fd0a";
+    if (e === "Procesando") color = "#21efec";
+    if (e === "Finalizado") color = "#ff1919";
+
+    contenedor.innerHTML += `
+      <button 
+        onclick="filtrarEstatus('${e}')"
+        class="btn-filtro text-white"
+        style="background:${color}"
+      >
+        ${e}
+      </button>
+    `;
+  });
+
 }
 
 function filtrarTipo(tipo) {
@@ -85,20 +124,35 @@ function filtrarTipo(tipo) {
   pintarProyectos();
 }
 
+function filtrarEstatus(estado) {
+  filtroEstatus = estado;
+  pintarProyectos();
+}
+
 /* ================= PINTAR PROYECTOS ================= */
 
 function pintarProyectos() {
+
   listaProyectos.innerHTML = "";
 
   let lista = proyectos;
 
   if (filtroTipo !== "Todos") {
-    lista = proyectos.filter(p => p.id_tipo_proyecto == filtroTipo);
+    lista = lista.filter(p => p.id_tipo_proyecto == filtroTipo);
+  }
+
+  if (filtroEstatus !== "Todos") {
+    lista = lista.filter(p => p.status == filtroEstatus);
   }
 
   lista.forEach(p => {
 
     const tipo = tiposProyecto.find(t => t.id == p.id_tipo_proyecto);
+
+    const colorEstado =
+      p.status === "Creado" ? "#2563eb" :
+      p.status === "Procesando" ? "#f59e0b" :
+      "#10b981";
 
     listaProyectos.innerHTML += `
       <a href="tickets.html?id=${p.id}">
@@ -108,12 +162,15 @@ function pintarProyectos() {
 
             <span 
               class="px-2 py-1 text-xs rounded text-white"
-              style="background:${tipo?.color || '#999'}"
+              style="background:${tipo?.color || "#999"}"
             >
               ${tipo?.clasificacion || ""}
             </span>
 
-            <span class="estado">
+            <span 
+              class="px-2 py-1 text-xs rounded text-white"
+              style="background:${colorEstado}"
+            >
               ${p.status}
             </span>
 
@@ -129,11 +186,13 @@ function pintarProyectos() {
       </a>
     `;
   });
+
 }
 
 /* ================= SELECT PROYECTOS ================= */
 
 function llenarSelectProyectos() {
+
   selectProyecto.innerHTML = `<option value="">Seleccione</option>`;
 
   proyectos.forEach(p => {
@@ -141,6 +200,7 @@ function llenarSelectProyectos() {
       <option value="${p.id}">${p.proyecto}</option>
     `;
   });
+
 }
 
 selectProyecto.addEventListener("change", () => {
@@ -154,11 +214,13 @@ selectProyecto.addEventListener("change", () => {
   proyectoTipo.value = proyecto.id_tipo_proyecto;
   proyectoStatus.value = proyecto.status;
   proyectoCliente.value = proyecto.cliente_interno;
+
 });
 
 /* ================= ACCIONES FAB ================= */
 
 function accionNuevo() {
+
   modo = "nuevo";
 
   selectorProyecto.classList.add("hidden");
@@ -166,9 +228,11 @@ function accionNuevo() {
   btnEliminarProyecto.classList.add("hidden");
 
   abrirModal("Nuevo Proyecto");
+
 }
 
 function accionEditar() {
+
   modo = "editar";
 
   selectorProyecto.classList.remove("hidden");
@@ -176,9 +240,11 @@ function accionEditar() {
   btnEliminarProyecto.classList.add("hidden");
 
   abrirModal("Editar Proyecto");
+
 }
 
 function accionEliminar() {
+
   modo = "eliminar";
 
   selectorProyecto.classList.remove("hidden");
@@ -186,11 +252,13 @@ function accionEliminar() {
   btnEliminarProyecto.classList.remove("hidden");
 
   abrirModal("Eliminar Proyecto");
+
 }
 
 /* ================= GUARDAR ================= */
 
 formProyecto.addEventListener("submit", async e => {
+
   e.preventDefault();
 
   const data = {
@@ -204,23 +272,28 @@ formProyecto.addEventListener("submit", async e => {
   };
 
   if (modo === "nuevo") {
+
     await fetch(`${API_URL}/proyectos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
     });
+
   }
 
   if (modo === "editar") {
+
     await fetch(`${API_URL}/proyectos/${proyectoId.value}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
     });
+
   }
 
   cerrarModal();
   cargarProyectos();
+
 });
 
 /* ================= ELIMINAR ================= */
@@ -236,14 +309,17 @@ async function confirmarEliminarProyecto() {
 
   cerrarModal();
   cargarProyectos();
+
 }
 
 /* ================= INIT ================= */
 
 async function init() {
+
   await cargarTiposProyecto();
-  await cargarEstatus();
+  cargarEstatus();
   await cargarProyectos();
+
 }
 
 init();

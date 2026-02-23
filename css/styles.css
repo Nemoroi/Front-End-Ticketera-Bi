@@ -116,3 +116,7 @@
   }
 
 }
+
+.btn-filtro-activo {
+  outline: 3px solid #111827;
+}
