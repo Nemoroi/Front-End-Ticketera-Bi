@@ -29,3 +29,9 @@ async function getMiembros() {
   const res = await fetch(`${API_URL}/miembros`);
   return res.json();
 }
+
+// Obtener tipo de proyecto
+async function getTipos_Proyecto() {
+  const res = await fetch(`${API_URL}/tipos-proyecto`);
+  return res.json();
+}

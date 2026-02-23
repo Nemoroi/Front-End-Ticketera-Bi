@@ -1,3 +1,5 @@
+/* ================= TICKETS ================= */
+
 .ticket {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -7,8 +9,11 @@
   box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
+/* ================= KANBAN ================= */
+
 .columna {
   min-height: 200px;
+  transition: background-color 0.2s ease;
 }
 
 .columna:hover {
@@ -19,4 +24,95 @@
   .columna {
     min-width: 85vw;
   }
+}
+
+/* ================= PROYECTOS (CARDS) ================= */
+
+.card-proyecto {
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  border-left: 5px solid #2563eb;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.card-proyecto:active {
+  transform: scale(1.03);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.15);
+}
+
+.card-proyecto:hover {
+  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
+
+.titulo {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1f2937;
+}
+
+.descripcion {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.estado {
+  font-size: 0.7rem;
+  background: #dbeafe;
+  color: #1e3a8a;
+  padding: 3px 8px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-top: 8px;
+}
+
+/* ================= FAB ================= */
+
+#fab {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#fab:active {
+  transform: scale(1.1) rotate(90deg);
+}
+
+#fabMenu button {
+  transition: all 0.2s ease;
+}
+
+/* ================= FILTROS TIPO ================= */
+
+.btn-filtro {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.btn-filtro:hover {
+  background: #d1d5db;
+  transform: scale(1.05);
+}
+
+/* ================= MODAL ================= */
+
+#modalProyecto {
+  backdrop-filter: blur(3px);
+}
+
+/* ================= SCROLL MOBILE ================= */
+
+@media (max-width: 640px) {
+
+  #listaProyectos {
+    gap: 14px;
+  }
+
+  .card-proyecto {
+    padding: 14px;
+  }
+
 }
