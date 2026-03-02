@@ -1,32 +1,174 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tickets - Ticketera BI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/styles.css">
+<title>Tickets - Ticketera BI</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="css/styles.css">
+
 </head>
+
 <body class="bg-gray-100">
 
-  <!-- Menú -->
-<nav class="bg-white shadow p-4 flex flex-col md:flex-row md:justify-between md:items-center gap-2">
-  <h1 class="font-bold text-xl text-center md:text-left">
-    Ticketera BI
-  </h1>
+<!-- NAVBAR -->
 
-  <div class="flex justify-center md:justify-end gap-4">
-    <a href="index.html" class="text-blue-600">Proyectos</a>
-    <a href="tickets.html" class="text-blue-600 font-semibold">Tickets</a>
-  </div>
+<nav class="bg-white shadow p-4 flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+
+<h1 class="font-bold text-xl text-center md:text-left">
+Ticketera BI
+</h1>
+
+<div class="flex justify-center md:justify-end gap-4">
+<a href="index.html" class="text-blue-600">Proyectos</a>
+<a href="tickets.html" class="text-blue-600 font-semibold">Tickets</a>
+</div>
+
 </nav>
 
 
+<!-- APP -->
 
-  <div id="app" class="p-4"></div>
+<div id="app" class="p-4"></div>
 
-  <script src="js/api.js"></script>
-  <script src="js/tickets.js"></script>
+
+<!-- FAB -->
+
+<button id="fab"
+class="fixed bottom-6 right-6 bg-blue-600 w-14 h-14 rounded-full
+text-white text-3xl shadow-lg flex items-center justify-center">
+
++
+
+</button>
+
+
+<!-- FAB MENU -->
+
+<div id="fabMenu"
+class="hidden fixed bottom-24 right-6 bg-white rounded-xl shadow-lg p-3 space-y-2 w-40">
+
+<button onclick="accionNuevoTicket()" class="block w-full text-left hover:text-blue-600">
+🎫 Nuevo
+</button>
+
+<button onclick="accionEditarTicket()" class="block w-full text-left hover:text-blue-600">
+✏️ Editar
+</button>
+
+<button onclick="accionEliminarTicket()" class="block w-full text-left hover:text-red-600">
+🗑️ Eliminar
+</button>
+
+</div>
+
+
+
+<!-- MODAL -->
+
+<div id="modalTicket"
+class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+
+<div class="bg-white rounded-xl shadow-lg w-11/12 md:w-[500px] p-6">
+
+<h2 id="modalTituloTicket" class="text-xl font-bold mb-4"></h2>
+
+<form id="formTicket" class="space-y-3">
+
+<input type="hidden" id="ticketId">
+
+
+<!-- selector ticket -->
+
+<div id="selectorTicket" class="hidden">
+<label class="text-sm font-semibold">Ticket</label>
+
+<select id="selectTicket" class="w-full border p-2 rounded"></select>
+</div>
+
+
+<!-- tarea -->
+
+<div>
+<label class="text-sm font-semibold">Tarea</label>
+
+<input id="ticketTarea"
+class="w-full border p-2 rounded"
+required>
+</div>
+
+
+<!-- descripcion -->
+
+<div>
+<label class="text-sm font-semibold">Descripción</label>
+
+<textarea id="ticketDescripcion"
+class="w-full border p-2 rounded"></textarea>
+</div>
+
+
+<!-- ASIGNADO A (NUEVO CAMPO) -->
+
+<div>
+<label class="text-sm font-semibold">Asignado a</label>
+
+<select id="ticketAsignado"
+class="w-full border p-2 rounded">
+
+<option value="">Sin asignar</option>
+
+</select>
+
+</div>
+
+
+<!-- botones -->
+
+<div class="flex justify-end gap-2 pt-4">
+
+<button
+type="button"
+onclick="cerrarModalTicket()"
+class="px-4 py-2 bg-gray-300 rounded">
+
+Cancelar
+
+</button>
+
+
+<button
+type="submit"
+class="px-4 py-2 bg-blue-600 text-white rounded">
+
+Guardar
+
+</button>
+
+
+<button
+type="button"
+id="btnEliminarTicket"
+onclick="confirmarEliminarTicket()"
+class="hidden px-4 py-2 bg-red-600 text-white rounded">
+
+Eliminar
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+<script src="js/api.js"></script>
+<script src="js/tickets.js"></script>
+
 </body>
 </html>

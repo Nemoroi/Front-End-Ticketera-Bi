@@ -27,7 +27,9 @@ function cerrarModal() {
 /* ================= CARGAS ================= */
 
 async function cargarProyectos() {
+
   proyectos = await getProyectos();
+
   pintarProyectos();
   llenarSelectProyectos();
 }
@@ -39,9 +41,13 @@ async function cargarTiposProyecto() {
   proyectoTipo.innerHTML = `<option value="">Seleccione</option>`;
 
   tiposProyecto.forEach(t => {
+
     proyectoTipo.innerHTML += `
-      <option value="${t.id}">${t.clasificacion}</option>
+      <option value="${t.id}">
+        ${t.clasificacion}
+      </option>
     `;
+
   });
 
   pintarFiltros();
@@ -52,9 +58,13 @@ function cargarEstatus() {
   proyectoStatus.innerHTML = `<option value="">Seleccione</option>`;
 
   estatusLista.forEach(e => {
+
     proyectoStatus.innerHTML += `
-      <option value="${e}">${e}</option>
+      <option value="${e}">
+        ${e}
+      </option>
     `;
+
   });
 
   pintarFiltrosEstatus();
@@ -73,6 +83,7 @@ function pintarFiltros() {
   `;
 
   tiposProyecto.forEach(t => {
+
     contenedor.innerHTML += `
       <button 
         onclick="filtrarTipo('${t.id}')"
@@ -82,17 +93,16 @@ function pintarFiltros() {
         ${t.clasificacion}
       </button>
     `;
+
   });
 
 }
 
 function pintarFiltrosEstatus() {
 
-  const contenedor = document.getElementById("filtrosTipo");
+  const contenedor = document.getElementById("filtrosEstatus");
 
-  contenedor.innerHTML += `<div class="w-full"></div>`;
-
-  contenedor.innerHTML += `
+  contenedor.innerHTML = `
     <button onclick="filtrarEstatus('Todos')" class="btn-filtro">
       Todos
     </button>
@@ -102,9 +112,9 @@ function pintarFiltrosEstatus() {
 
     let color = "#6b7280";
 
-    if (e === "Creado") color = "#06fd0a";
-    if (e === "Procesando") color = "#21efec";
-    if (e === "Finalizado") color = "#ff1919";
+    if (e === "Creado") color = "#2563eb";
+    if (e === "Procesando") color = "#f59e0b";
+    if (e === "Finalizado") color = "#10b981";
 
     contenedor.innerHTML += `
       <button 
@@ -115,6 +125,7 @@ function pintarFiltrosEstatus() {
         ${e}
       </button>
     `;
+
   });
 
 }
@@ -155,37 +166,73 @@ function pintarProyectos() {
       "#10b981";
 
     listaProyectos.innerHTML += `
-      <a href="tickets.html?id=${p.id}">
-        <div class="card-proyecto">
 
-          <div class="flex justify-between items-center mb-2">
+      <div class="card-proyecto cursor-pointer"
+           onclick="abrirTickets(${p.id})"
+           oncontextmenu="editarDesdeTarjeta(event, ${p.id})">
 
-            <span 
-              class="px-2 py-1 text-xs rounded text-white"
-              style="background:${tipo?.color || "#999"}"
-            >
-              ${tipo?.clasificacion || ""}
-            </span>
+        <div class="flex justify-between items-center mb-2">
 
-            <span 
-              class="px-2 py-1 text-xs rounded text-white"
-              style="background:${colorEstado}"
-            >
-              ${p.status}
-            </span>
+          <span 
+            class="px-2 py-1 text-xs rounded text-white"
+            style="background:${tipo?.color || "#999"}"
+          >
+            ${tipo?.clasificacion || ""}
+          </span>
 
-          </div>
-
-          <h3 class="titulo">${p.proyecto}</h3>
-
-          <p class="descripcion">
-            ${p.descripcion || ""}
-          </p>
+          <span 
+            class="px-2 py-1 text-xs rounded text-white"
+            style="background:${colorEstado}"
+          >
+            ${p.status}
+          </span>
 
         </div>
-      </a>
+
+        <h3 class="titulo">${p.proyecto}</h3>
+
+        <p class="descripcion">
+          ${p.descripcion || ""}
+        </p>
+
+      </div>
+
     `;
+
   });
+
+}
+
+/* ================= CLICK TARJETA ================= */
+
+function abrirTickets(id) {
+
+  window.location.href = `tickets.html?id=${id}`;
+
+}
+
+function editarDesdeTarjeta(e, id) {
+
+  e.preventDefault();
+
+  const proyecto = proyectos.find(p => p.id == id);
+
+  if (!proyecto) return;
+
+  modo = "editar";
+
+  selectorProyecto.classList.add("hidden");
+
+  proyectoId.value = proyecto.id;
+  proyectoNombre.value = proyecto.proyecto;
+  proyectoDescripcion.value = proyecto.descripcion;
+  proyectoTipo.value = proyecto.id_tipo_proyecto;
+  proyectoStatus.value = proyecto.status;
+  proyectoCliente.value = proyecto.cliente_interno;
+
+  btnEliminarProyecto.classList.remove("hidden");
+
+  abrirModal("Editar Proyecto");
 
 }
 
@@ -196,9 +243,13 @@ function llenarSelectProyectos() {
   selectProyecto.innerHTML = `<option value="">Seleccione</option>`;
 
   proyectos.forEach(p => {
+
     selectProyecto.innerHTML += `
-      <option value="${p.id}">${p.proyecto}</option>
+      <option value="${p.id}">
+        ${p.proyecto}
+      </option>
     `;
+
   });
 
 }
@@ -262,6 +313,7 @@ formProyecto.addEventListener("submit", async e => {
   e.preventDefault();
 
   const data = {
+
     proyecto: proyectoNombre.value,
     descripcion: proyectoDescripcion.value,
     id_tipo_proyecto: parseInt(proyectoTipo.value),
@@ -269,25 +321,18 @@ formProyecto.addEventListener("submit", async e => {
     cliente_interno: proyectoCliente.value,
     fecha_creacion: new Date().toISOString().split("T")[0],
     borrado: false
+
   };
 
   if (modo === "nuevo") {
 
-    await fetch(`${API_URL}/proyectos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
+    await crearProyecto(data);
 
   }
 
   if (modo === "editar") {
 
-    await fetch(`${API_URL}/proyectos/${proyectoId.value}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
+    await actualizarProyecto(proyectoId.value, data);
 
   }
 
@@ -303,9 +348,7 @@ async function confirmarEliminarProyecto() {
   if (!proyectoId.value)
     return alert("Seleccione un proyecto");
 
-  await fetch(`${API_URL}/proyectos/${proyectoId.value}`, {
-    method: "DELETE"
-  });
+  await eliminarProyecto(proyectoId.value);
 
   cerrarModal();
   cargarProyectos();

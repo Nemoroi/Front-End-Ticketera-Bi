@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Proyectos - Ticketera BI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Proyectos - Ticketera BI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/styles.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="css/styles.css">
 
 </head>
 
@@ -15,38 +15,38 @@
 <!-- NAVBAR -->
 <nav class="bg-white shadow p-4 flex flex-col md:flex-row md:justify-between md:items-center gap-2">
 
-  <h1 class="font-bold text-xl text-center md:text-left">
-    Ticketera BI
-  </h1>
+<h1 class="font-bold text-xl text-center md:text-left">
+Ticketera BI
+</h1>
 
-  <div class="flex justify-center md:justify-end gap-4">
-    <a href="index.html" class="text-blue-600 font-semibold">Proyectos</a>
-    <a href="tickets.html" class="text-blue-600">Tickets</a>
-  </div>
+<div class="flex justify-center md:justify-end gap-4">
+<a href="index.html" class="text-blue-600 font-semibold">Proyectos</a>
+<a href="tickets.html" class="text-blue-600">Tickets</a>
+</div>
 
 </nav>
 
 <!-- CONTENEDOR -->
 <div class="p-4 space-y-4">
 
-  <h2 class="text-2xl font-bold">Proyectos</h2>
+<h2 class="text-2xl font-bold">Proyectos</h2>
 
-  <!-- 🔹 FILTROS TIPO -->
-  <div>
-    <h3 class="text-sm font-semibold text-gray-500 mb-2">Tipo</h3>
-    <div id="filtrosTipo" class="flex flex-wrap gap-2"></div>
-  </div>
+<!-- FILTROS TIPO -->
+<div>
+<h3 class="text-sm font-semibold text-gray-500 mb-2">Tipo</h3>
+<div id="filtrosTipo" class="flex flex-wrap gap-2"></div>
+</div>
 
-  <!-- 🔹 FILTROS ESTATUS -->
-  <div>
-    <h3 class="text-sm font-semibold text-gray-500 mb-2">Estatus</h3>
-    <div id="filtrosEstatus" class="flex flex-wrap gap-2"></div>
-  </div>
+<!-- FILTROS ESTATUS -->
+<div>
+<h3 class="text-sm font-semibold text-gray-500 mb-2">Estatus</h3>
+<div id="filtrosEstatus" class="flex flex-wrap gap-2"></div>
+</div>
 
-  <!-- LISTADO -->
-  <div id="listaProyectos"
-       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  </div>
+<!-- LISTADO -->
+<div id="listaProyectos"
+class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+</div>
 
 </div>
 
@@ -61,17 +61,20 @@ text-white text-3xl shadow-lg flex items-center justify-center">
 <div id="fabMenu"
 class="hidden fixed bottom-24 right-6 bg-white rounded-xl shadow-lg p-3 space-y-2 w-40">
 
-  <button onclick="accionNuevo()" class="block w-full text-left hover:text-blue-600">
-    📁 Nuevo
-  </button>
+<button onclick="accionNuevo()"
+class="block w-full text-left hover:text-blue-600">
+📁 Nuevo
+</button>
 
-  <button onclick="accionEditar()" class="block w-full text-left hover:text-blue-600">
-    ✏️ Editar
-  </button>
+<button onclick="accionEditar()"
+class="block w-full text-left hover:text-blue-600">
+✏️ Editar
+</button>
 
-  <button onclick="accionEliminar()" class="block w-full text-left hover:text-red-600">
-    🗑️ Eliminar
-  </button>
+<button onclick="accionEliminar()"
+class="block w-full text-left hover:text-red-600">
+🗑️ Eliminar
+</button>
 
 </div>
 
@@ -79,77 +82,98 @@ class="hidden fixed bottom-24 right-6 bg-white rounded-xl shadow-lg p-3 space-y-
 <div id="modalProyecto"
 class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
 
-  <div class="bg-white rounded-xl shadow-lg w-11/12 md:w-[500px] p-6">
+<div class="bg-white rounded-xl shadow-lg w-11/12 md:w-[500px] p-6">
 
-    <h2 id="modalTitulo" class="text-xl font-bold mb-4"></h2>
+<h2 id="modalTitulo" class="text-xl font-bold mb-4"></h2>
 
-    <form id="formProyecto" class="space-y-3">
+<form id="formProyecto" class="space-y-3">
 
-      <input type="hidden" id="proyectoId">
+<input type="hidden" id="proyectoId">
 
-      <!-- SELECTOR PROYECTO -->
-      <div id="selectorProyecto" class="hidden">
-        <label class="text-sm font-semibold">Proyecto</label>
-        <select id="selectProyecto" class="w-full border p-2 rounded"></select>
-      </div>
+<!-- SELECTOR PROYECTO -->
+<div id="selectorProyecto" class="hidden">
 
-      <!-- NOMBRE -->
-      <div>
-        <label class="text-sm font-semibold">Nombre</label>
-        <input id="proyectoNombre" class="w-full border p-2 rounded" required>
-      </div>
+<label class="text-sm font-semibold">
+Seleccionar Proyecto
+</label>
 
-      <!-- DESCRIPCIÓN -->
-      <div>
-        <label class="text-sm font-semibold">Descripción</label>
-        <textarea id="proyectoDescripcion" class="w-full border p-2 rounded"></textarea>
-      </div>
+<select id="selectProyecto"
+class="w-full border p-2 rounded">
+</select>
 
-      <!-- TIPO -->
-      <div>
-        <label class="text-sm font-semibold">Tipo Proyecto</label>
-        <select id="proyectoTipo" class="w-full border p-2 rounded"></select>
-      </div>
+</div>
 
-      <!-- STATUS -->
-      <div>
-        <label class="text-sm font-semibold">Status</label>
-        <select id="proyectoStatus" class="w-full border p-2 rounded"></select>
-      </div>
+<!-- NOMBRE -->
+<div>
+<label class="text-sm font-semibold">Nombre</label>
 
-      <!-- CLIENTE -->
-      <div>
-        <label class="text-sm font-semibold">Cliente Interno</label>
-        <input id="proyectoCliente" class="w-full border p-2 rounded">
-      </div>
+<input id="proyectoNombre"
+class="w-full border p-2 rounded"
+required>
+</div>
 
-      <!-- BOTONES -->
-      <div class="flex justify-end gap-2 pt-4">
+<!-- DESCRIPCIÓN -->
+<div>
+<label class="text-sm font-semibold">Descripción</label>
 
-        <button type="button"
-                onclick="cerrarModal()"
-                class="px-4 py-2 bg-gray-300 rounded">
-          Cancelar
-        </button>
+<textarea id="proyectoDescripcion"
+class="w-full border p-2 rounded">
+</textarea>
+</div>
 
-        <button type="submit"
-                class="px-4 py-2 bg-blue-600 text-white rounded">
-          Guardar
-        </button>
+<!-- TIPO -->
+<div>
+<label class="text-sm font-semibold">Tipo Proyecto</label>
 
-        <button type="button"
-                id="btnEliminarProyecto"
-                onclick="confirmarEliminarProyecto()"
-                class="hidden px-4 py-2 bg-red-600 text-white rounded">
-          Eliminar
-        </button>
+<select id="proyectoTipo"
+class="w-full border p-2 rounded">
+</select>
+</div>
 
-      </div>
+<!-- STATUS -->
+<div>
+<label class="text-sm font-semibold">Status</label>
 
-    </form>
+<select id="proyectoStatus"
+class="w-full border p-2 rounded">
+</select>
+</div>
 
-  </div>
+<!-- CLIENTE -->
+<div>
+<label class="text-sm font-semibold">Cliente Interno</label>
 
+<input id="proyectoCliente"
+class="w-full border p-2 rounded">
+</div>
+
+<!-- BOTONES -->
+<div class="flex justify-end gap-2 pt-4">
+
+<button type="button"
+onclick="cerrarModal()"
+class="px-4 py-2 bg-gray-300 rounded">
+Cancelar
+</button>
+
+<button type="submit"
+id="btnGuardarProyecto"
+class="px-4 py-2 bg-blue-600 text-white rounded">
+Guardar
+</button>
+
+<button type="button"
+id="btnEliminarProyecto"
+onclick="confirmarEliminarProyecto()"
+class="hidden px-4 py-2 bg-red-600 text-white rounded">
+Eliminar
+</button>
+
+</div>
+
+</form>
+
+</div>
 </div>
 
 <!-- SCRIPTS -->
