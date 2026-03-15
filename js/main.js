@@ -1,9 +1,13 @@
 let proyectos = [];
 let tiposProyecto = [];
+let miembros = [];
 let modo = "nuevo";
 
 let filtroTipo = "Todos";
 let filtroEstatus = "Todos";
+
+let filtroPrioridad = "Todos";
+let prioridades = [];
 
 let estatusLista = ["Creado", "Procesando", "Finalizado"];
 
@@ -70,6 +74,67 @@ function cargarEstatus() {
   pintarFiltrosEstatus();
 }
 
+async function cargarPrioridades() {
+
+  prioridades = await getPrioridades();
+
+  const contenedor = document.getElementById("filtrosPrioridad");
+
+  contenedor.innerHTML = `
+    <button onclick="filtrarPrioridad('Todos')" class="btn-filtro">
+      Todas
+    </button>
+  `;
+
+  proyectoPrioridad.innerHTML = `<option value="">Seleccione</option>`;
+
+  prioridades.forEach(p => {
+
+    const color =
+      p.prioridad === "Alta" ? "#ef4444" :
+      p.prioridad === "Media" ? "#f59e0b" :
+      p.prioridad === "Baja" ? "#10b981" :
+      "#6b7280";
+
+    contenedor.innerHTML += `
+      <button 
+        onclick="filtrarPrioridad('${p.id}')"
+        class="btn-filtro text-white"
+        style="background:${color}"
+      >
+        ${p.prioridad}
+      </button>
+    `;
+
+        // select del formulario
+    proyectoPrioridad.innerHTML += `
+      <option value="${p.id}">
+        ${p.prioridad}
+      </option>
+    `;
+
+  });
+
+}
+
+async function cargarMiembros() {
+
+  miembros = await getMiembros();
+
+  proyectoOwner.innerHTML = `<option value="">Seleccione</option>`;
+
+  miembros.forEach(m => {
+
+    proyectoOwner.innerHTML += `
+      <option value="${m.id}">
+        ${m.nombre}
+      </option>
+    `;
+
+  });
+
+}
+
 /* ================= FILTROS ================= */
 
 function pintarFiltros() {
@@ -130,6 +195,14 @@ function pintarFiltrosEstatus() {
 
 }
 
+function filtrarPrioridad(prioridad) {
+
+  filtroPrioridad = prioridad;
+
+  pintarProyectos();
+
+}
+
 function filtrarTipo(tipo) {
   filtroTipo = tipo;
   pintarProyectos();
@@ -156,14 +229,28 @@ function pintarProyectos() {
     lista = lista.filter(p => p.status == filtroEstatus);
   }
 
+  if (filtroPrioridad !== "Todos") {
+  lista = lista.filter(p => p.prioridad_id == filtroPrioridad);
+  }
+
   lista.forEach(p => {
 
     const tipo = tiposProyecto.find(t => t.id == p.id_tipo_proyecto);
+
+    const prioridad = prioridades.find(pr => pr.id == p.prioridad_id);
+
+    const owner = miembros.find(m => m.id == p.idowner);
 
     const colorEstado =
       p.status === "Creado" ? "#2563eb" :
       p.status === "Procesando" ? "#f59e0b" :
       "#10b981";
+
+    const colorPrioridad =
+      prioridad?.prioridad === "Alta" ? "#ef4444" :
+      prioridad?.prioridad === "Media" ? "#f59e0b" :
+      prioridad?.prioridad === "Baja" ? "#10b981" :
+      "#6b7280";
 
     listaProyectos.innerHTML += `
 
@@ -172,6 +259,13 @@ function pintarProyectos() {
            oncontextmenu="editarDesdeTarjeta(event, ${p.id})">
 
         <div class="flex justify-between items-center mb-2">
+
+          <span 
+            class="px-2 py-1 text-xs rounded text-white"
+            style="background:${colorPrioridad}"
+          >
+            ${prioridad?.prioridad || ""}
+          </span>
 
           <span 
             class="px-2 py-1 text-xs rounded text-white"
@@ -189,11 +283,18 @@ function pintarProyectos() {
 
         </div>
 
+
+
         <h3 class="titulo">${p.proyecto}</h3>
 
         <p class="descripcion">
           ${p.descripcion || ""}
         </p>
+
+        <div class="text-xs text-gray-500 mt-2 space-y-1">
+        <p><b>Cliente:</b> ${p.cliente_interno || "-"}</p>
+        <p><b>Owner:</b> ${owner?.nombre || "-"}</p>
+        </div>
 
       </div>
 
@@ -229,7 +330,8 @@ function editarDesdeTarjeta(e, id) {
   proyectoTipo.value = proyecto.id_tipo_proyecto;
   proyectoStatus.value = proyecto.status;
   proyectoCliente.value = proyecto.cliente_interno;
-
+  proyectoPrioridad.value = proyecto.prioridad_id || "";
+  proyectoOwner.value = proyecto.idowner || "";  
   btnEliminarProyecto.classList.remove("hidden");
 
   abrirModal("Editar Proyecto");
@@ -317,6 +419,8 @@ formProyecto.addEventListener("submit", async e => {
     proyecto: proyectoNombre.value,
     descripcion: proyectoDescripcion.value,
     id_tipo_proyecto: parseInt(proyectoTipo.value),
+    prioridad_id: parseInt(proyectoPrioridad.value),
+    idowner: parseInt(proyectoOwner.value),
     status: proyectoStatus.value,
     cliente_interno: proyectoCliente.value,
     fecha_creacion: new Date().toISOString().split("T")[0],
@@ -361,6 +465,8 @@ async function init() {
 
   await cargarTiposProyecto();
   cargarEstatus();
+  await cargarPrioridades();
+  await cargarMiembros();
   await cargarProyectos();
 
 }

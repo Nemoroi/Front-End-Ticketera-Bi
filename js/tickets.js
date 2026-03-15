@@ -1,3 +1,5 @@
+let filtroAsignado = "Todos"
+let proyectosGlobal = []
 let ticketsGlobal = []
 let miembrosGlobal = []
 let modo = "nuevo"
@@ -17,10 +19,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   proyectoId = params.get("id")
 
   await cargarMiembros()
+  pintarFiltrosAsignado()
+  await cargarProyectos()
   await cargarTickets()
+
 
 })
 
+/* ================= PROYECTOS ================= */
+
+async function cargarProyectos(){
+
+  proyectosGlobal = await getProyectos()
+
+}
 
 /* ================= MIEMBROS ================= */
 
@@ -58,6 +70,14 @@ async function cargarTickets(){
 
     ticketsGlobal = tickets
 
+    if(filtroAsignado !== "Todos"){
+
+  ticketsGlobal = ticketsGlobal.filter(
+    t => String(t.id_asignado) === String(filtroAsignado)
+  )
+
+}
+
   }
 
   llenarSelectTickets()
@@ -66,6 +86,42 @@ async function cargarTickets(){
 
 }
 
+/* ================= FILTROS ================= */
+
+function pintarFiltrosAsignado(){
+
+  const contenedor = document.getElementById("filtrosAsignado")
+
+  contenedor.innerHTML = `
+    <button onclick="filtrarAsignado('Todos')" class="btn-filtro">
+      Todos
+    </button>
+  `
+
+  miembrosGlobal.forEach(m => {
+
+    contenedor.innerHTML += `
+      <button
+        onclick="filtrarAsignado('${m.id}')"
+        class="btn-filtro text-white bg-blue-500"
+      >
+        ${m.nombre}
+      </button>
+    `
+
+  })
+
+}
+
+function filtrarAsignado(id){
+
+  filtroAsignado = id
+
+  const estatus = document.querySelectorAll(".columna")
+
+  cargarTickets()
+
+}
 
 /* ================= KANBAN ================= */
 
@@ -102,6 +158,10 @@ function renderKanban(tickets,estatus){
       m => Number(m.id) === Number(t.id_asignado)
     )
 
+    const proyecto = proyectosGlobal.find(
+      p => String(p.id) === String(t.id_proyecto)
+    )
+
     return `
 
     <div
@@ -117,6 +177,10 @@ function renderKanban(tickets,estatus){
 
     <p class="text-sm text-gray-600">
     ${t.descripcion || ""}
+    </p>
+
+    <p class="text-xs text-purple-600">
+    📁 ${proyecto ? proyecto.proyecto : "Sin proyecto"}
     </p>
 
     <p class="text-xs text-blue-600 mt-2">
@@ -186,18 +250,31 @@ function abrirModalTicket(titulo){
 
 function cerrarModalTicket(){
 
+  limpiarFormularioTicket()
   modalTicket.classList.add("hidden")
-  formTicket.reset()
-  location.reload()
 
 }
 
+function limpiarFormularioTicket(){
+
+  ticketId.value = ""
+  ticketTarea.value = ""
+  ticketDescripcion.value = ""
+  ticketAsignado.value = ""
+  selectTicket.value = ""
+
+  // NO uses formTicket.reset() — no limpia selects dinámicos confiablemente
+
+}
 
 /* ================= FAB ================= */
 
 function accionNuevoTicket(){
 
   modo = "nuevo"
+
+  fabMenu.classList.add("hidden")
+  limpiarFormularioTicket()        // ← limpia ANTES de abrir
 
   selectorTicket.classList.add("hidden")
   btnEliminarTicket.classList.add("hidden")
@@ -253,23 +330,23 @@ formTicket.addEventListener("submit", async e =>{
 
   }
 
-  try{
+try{
 
     if(modo==="nuevo"){
 
-      await fetch(`${API_URL}/tickets`,{
+      const res = await fetch(`${API_URL}/tickets/`,{
         method:"POST",
         headers:{ "Content-Type":"application/json"},
         body:JSON.stringify(data)
       })
 
-      location.reload()
+      console.log("respuesta POST:", res.status, await res.json()) // ← AGREGA ESTO
 
     }
 
     if(modo==="editar"){
 
-      await fetch(`${API_URL}/tickets/${ticketId.value}`,{
+      const res = await fetch(`${API_URL}/tickets/${ticketId.value}`,{
         method:"PUT",
         headers:{ "Content-Type":"application/json"},
         body:JSON.stringify({
@@ -280,11 +357,16 @@ formTicket.addEventListener("submit", async e =>{
         })
       })
 
+      console.log("respuesta PUT:", res.status, await res.json()) // ← AGREGA ESTO
+
     }
 
     cerrarModalTicket()
+    await cargarTickets()
 
-    location.reload()
+  } catch(err) {               // ← AGREGA ESTE CATCH
+
+    console.error("ERROR al guardar:", err)
 
   } finally {
 

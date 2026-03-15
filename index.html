@@ -31,21 +31,32 @@ Ticketera BI
 
 <h2 class="text-2xl font-bold">Proyectos</h2>
 
-<!-- FILTROS TIPO -->
-<div>
-<h3 class="text-sm font-semibold text-gray-500 mb-2">Tipo</h3>
-<div id="filtrosTipo" class="flex flex-wrap gap-2"></div>
-</div>
+<!-- CONTENEDOR FILTROS -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-<!-- FILTROS ESTATUS -->
-<div>
-<h3 class="text-sm font-semibold text-gray-500 mb-2">Estatus</h3>
-<div id="filtrosEstatus" class="flex flex-wrap gap-2"></div>
+  <!-- FILTROS TIPO -->
+  <div>
+    <h3 class="text-sm font-semibold text-gray-500 mb-2">Tipo</h3>
+    <div id="filtrosTipo" class="flex flex-wrap gap-2"></div>
+  </div>
+
+  <!-- FILTROS ESTATUS -->
+  <div>
+    <h3 class="text-sm font-semibold text-gray-500 mb-2">Estatus</h3>
+    <div id="filtrosEstatus" class="flex flex-wrap gap-2"></div>
+  </div>
+
+  <!-- FILTROS PRIORIDAD -->
+  <div>
+    <h3 class="text-sm font-semibold text-gray-500 mb-2">Prioridad</h3>
+    <div id="filtrosPrioridad" class="flex flex-wrap gap-2"></div>
+  </div>
+
 </div>
 
 <!-- LISTADO -->
 <div id="listaProyectos"
-class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 </div>
 
 </div>
@@ -145,6 +156,23 @@ class="w-full border p-2 rounded">
 
 <input id="proyectoCliente"
 class="w-full border p-2 rounded">
+</div>
+
+<!-- OWNER -->
+
+<div>
+  <label class="label">Owner</label>
+    <select id="proyectoOwner"
+    class="w-full border p-2 rounded">
+    </select>
+</div>
+<!-- PRIORIDAD -->
+
+<div>
+  <label class="label">Prioridad</label>
+    <select id="proyectoPrioridad"
+    class="w-full border p-2 rounded">
+    </select>
 </div>
 
 <!-- BOTONES -->

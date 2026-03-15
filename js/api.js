@@ -92,3 +92,13 @@ async function getTipos_Proyecto() {
   const res = await fetch(`${API_URL}/tipos-proyecto`);
   return res.json();
 }
+
+
+// =========================
+// PRIORIDADES
+// =========================
+
+async function getPrioridades() {
+  const res = await fetch(`${API_URL}/prioridades`);
+  return res.json();
+}
